@@ -1,0 +1,9 @@
+# Publish only the built output + docs (see "files" in package.json).
+src/
+examples/
+node_modules/
+.github/
+tsconfig.json
+.gitignore
+*.log
+.env

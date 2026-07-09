@@ -1,0 +1,56 @@
+{
+  "name": "@snapedit/sdk",
+  "version": "1.0.0",
+  "description": "Official TypeScript/JavaScript SDK for the SnapEdit API — 40+ AI image & video editing models through a single API key.",
+  "keywords": [
+    "snapedit",
+    "ai",
+    "image-editing",
+    "background-removal",
+    "object-removal",
+    "upscale",
+    "image-generation",
+    "virtual-try-on",
+    "video-enhance"
+  ],
+  "homepage": "https://github.com/duonglm21/snapedit-api#readme",
+  "bugs": {
+    "url": "https://github.com/duonglm21/snapedit-api/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duonglm21/snapedit-api.git"
+  },
+  "license": "MIT",
+  "author": "SnapEdit <developer@snapedit.app>",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0"
+  }
+}
