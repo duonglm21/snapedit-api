@@ -1,4 +1,4 @@
-# SnapEdit SDK
+# SnapEdit SDK123
 
 [![npm version](https://img.shields.io/npm/v/snapedit-api.svg)](https://www.npmjs.com/package/snapedit-api)
 [![license](https://img.shields.io/npm/l/snapedit-api.svg)](./LICENSE)
