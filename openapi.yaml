@@ -1,0 +1,440 @@
+openapi: 3.1.0
+info:
+  title: SnapEdit API
+  version: "1.0.0"
+  description: >
+    Official REST API for SnapEdit — 40+ AI image & video editing models
+    through a single API key: background removal, object erasing, upscaling,
+    image generation, virtual try-on, and more.
+
+
+    This spec currently documents a representative subset of endpoints
+    (one of each shape: simple image op, generation, detection, and async task).
+    See https://developer.snapedit.app/en/docs for the full reference.
+  contact:
+    name: SnapEdit Developer
+    url: https://developer.snapedit.app
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.snapedit.app/v1
+    description: Production
+
+security:
+  - bearerAuth: []
+  - apiKeyAuth: []
+
+tags:
+  - name: Removal
+    description: Erase objects, text, logos, or the background.
+  - name: Enhance
+    description: Upscale, restore, and repair images.
+  - name: Generation
+    description: Text-to-image and image-to-image generation.
+  - name: Detection
+    description: Locate objects, text, or wires in an image.
+  - name: Virtual Try-On
+    description: Async clothing try-on tasks.
+  - name: System
+    description: Service health.
+
+paths:
+  /images/remove-background:
+    post:
+      operationId: removeBackground
+      summary: Remove background
+      description: Removes the background from an image. Cost 1 credit.
+      tags: [Removal]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [input_image]
+              properties:
+                input_image:
+                  type: string
+                  description: Image file or a public URL.
+                  example: https://img.snapedit.app/portrait.jpg
+                output_type:
+                  type: string
+                  enum: [foreground, mask]
+                  default: foreground
+      responses:
+        "200":
+          description: Processed image.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImageResult"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+
+  /images/remove-objects:
+    post:
+      operationId: removeObjects
+      summary: Remove objects
+      description: >
+        Erases objects using a mask or a session from /images/detect-objects.
+        Cost 2 (normal), 3 (super), 17 (ultra).
+      tags: [Removal]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [input_image]
+              properties:
+                input_image:
+                  type: string
+                  description: Image file or public URL.
+                original_session_id:
+                  type: string
+                  description: Session id returned by /images/detect-objects.
+                input_mask:
+                  type: string
+                  description: Manual mask file (RGBA) if not using a session.
+                mask_objects:
+                  type: string
+                  description: Comma-separated object ids selected from detection.
+                erase_mode:
+                  type: string
+                  enum: [normal, super, ultra]
+                  default: normal
+      responses:
+        "200":
+          description: Processed image.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImageResult"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+
+  /images/enhance:
+    post:
+      operationId: enhanceImage
+      summary: Enhance & upscale image
+      description: Upscales 2x or 4x with optional face enhancement. Cost 4 (2x), 7 (4x).
+      tags: [Enhance]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [input_image, zoom_factor]
+              properties:
+                input_image:
+                  type: string
+                  description: Image file or public URL. Max 1500px on the longest edge.
+                zoom_factor:
+                  type: integer
+                  enum: [2, 4]
+                enhance_faces:
+                  type: boolean
+                  default: true
+      responses:
+        "200":
+          description: Upscaled image.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImageResult"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+
+  /images/generates/zimage:
+    post:
+      operationId: generateZImage
+      summary: Generate image (Z-Image Turbo)
+      description: Text-to-image generation. Cost 9 credits.
+      tags: [Generation]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [prompt]
+              properties:
+                prompt:
+                  type: string
+                  example: a fox in a snowy forest, cinematic lighting
+                aspect_ratio:
+                  type: string
+                  enum: ["1:1", "3:2", "2:3", "4:3", "3:4", "16:9", "9:16"]
+                  default: "1:1"
+      responses:
+        "200":
+          description: Generated image.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImageResult"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+
+  /images/detect-objects:
+    post:
+      operationId: detectObjects
+      summary: Detect objects
+      description: Detects objects and returns masks + a session id for later erasing. Cost 1 credit.
+      tags: [Detection]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [input_image]
+              properties:
+                input_image:
+                  type: string
+                  description: Image file or public URL.
+                lang:
+                  type: string
+                  enum: [en, es, id, jp, ms, pt, th, vi]
+                  default: en
+      responses:
+        "200":
+          description: Detected objects.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DetectionResult"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+
+  /images/try-on:
+    post:
+      operationId: createTryOn
+      summary: Create virtual try-on task
+      description: >
+        Starts an async clothing try-on task. Cost 10 (Normal), 18 (HD).
+        Poll GET /images/try-on/tasks/{task_id} until status is COMPLETED.
+      tags: [Virtual Try-On]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [model_image, cloth_image, cloth_type]
+              properties:
+                model_image:
+                  type: string
+                  description: Person image file or public URL.
+                cloth_image:
+                  type: string
+                  description: Clothing image file or public URL.
+                lower_cloth_image:
+                  type: string
+                  description: Lower clothing image (for cloth_type=full).
+                cloth_type:
+                  type: string
+                  enum: [upper, lower, full]
+                hd_mode:
+                  type: boolean
+                  default: false
+      responses:
+        "200":
+          description: Task created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /images/try-on/tasks/{task_id}:
+    get:
+      operationId: getTryOnTask
+      summary: Get try-on task status
+      tags: [Virtual Try-On]
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: task_abc123
+      responses:
+        "200":
+          description: Current task status.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    delete:
+      operationId: cancelTryOnTask
+      summary: Cancel try-on task
+      tags: [Virtual Try-On]
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Task cancelled.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+
+  /health:
+    get:
+      operationId: health
+      summary: Health check
+      description: Unauthenticated service health check.
+      tags: [System]
+      security: []
+      responses:
+        "200":
+          description: Service is healthy.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+                  checks:
+                    type: object
+                    additionalProperties:
+                      type: string
+                  timestamp:
+                    type: string
+                    format: date-time
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: "Authorization: Bearer sk-snap-xxxxx"
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: api-key
+      description: "api-key: sk-snap-xxxxx"
+
+  responses:
+    Unauthorized:
+      description: Invalid or missing API key.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    RateLimited:
+      description: Rate limit exceeded (60 requests/minute).
+      headers:
+        retry-after:
+          schema:
+            type: integer
+          description: Seconds to wait before retrying.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  schemas:
+    ImageResult:
+      type: object
+      properties:
+        created:
+          type: integer
+          example: 1745827200
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                example: https://outputs.snapedit.app/outputs/result.png
+
+    DetectionResult:
+      type: object
+      properties:
+        session_id:
+          type: string
+          example: sess_abc123
+        detected_objects:
+          type: array
+          items:
+            type: object
+            properties:
+              box:
+                type: array
+                items:
+                  type: number
+                example: [120, 50, 300, 400]
+              mask:
+                type: string
+                description: Base64-encoded mask.
+              accuracy:
+                type: number
+                example: 0.95
+              object_type:
+                type: string
+                example: person
+
+    Task:
+      type: object
+      properties:
+        task_id:
+          type: string
+          example: task_abc123
+        status:
+          type: string
+          enum: [CREATED, PENDING, PROCESSING, COMPLETED, FAILED, CANCELLED]
+        progress:
+          type: integer
+          example: 75
+        download_url:
+          type: [string, "null"]
+          example: https://outputs.snapedit.app/outputs/result.png
+        error_msg:
+          type: [string, "null"]
+        created_at:
+          type: integer
+        started_at:
+          type: integer
+        completed_at:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Invalid API key
+            type:
+              type: string
+              example: authentication_error
+            code:
+              type: integer
+              example: 401
