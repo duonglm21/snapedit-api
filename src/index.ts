@@ -11,7 +11,7 @@ import {
   UtilityResource,
   VideoResource,
 } from "./resources.js";
-import type { RequestOptions } from "./types.js";
+import type { RateLimit, RequestOptions } from "./types.js";
 
 export interface SnapEditOptions {
   /** Your SnapEdit API key (starts with `sk-snap-`). */
@@ -89,7 +89,7 @@ export class SnapEdit {
   }
 
   /** Rate-limit info from the most recent response. */
-  get rateLimit() {
+  get rateLimit(): RateLimit {
     return this.http.rateLimit;
   }
 

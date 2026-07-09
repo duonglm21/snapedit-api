@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>snapedit-api — SnapEdit SDK for TypeScript / JavaScript</title>
+<meta name="description" content="Official TypeScript/JavaScript SDK for the SnapEdit API — 40+ AI image & video editing models through a single API key." />
+<style>
+  :root {
+    --bg: #FBFBFD; --ink: #101317; --muted: #6B7280;
+    --accent: #5B5BF0; --mint: #12B981; --line: #E7E7EE;
+    --code-bg: #14161C; --code-ink: #E4E6ED; --chip: #EFEFFB; --maxw: 74ch;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:16px; line-height:1.65; -webkit-font-smoothing:antialiased; }
+  .wrap { display:grid; grid-template-columns:1fr; max-width:1140px; margin:0 auto; padding:0 24px; }
+  @media (min-width:1000px){ .wrap{ grid-template-columns:220px minmax(0,1fr); gap:56px; padding:0 32px; } }
+  .topbar { grid-column:1/-1; display:flex; align-items:center; gap:14px; padding:22px 0 20px; border-bottom:1px solid var(--line); margin-bottom:40px; }
+  .logo { width:38px; height:38px; border-radius:10px; background:linear-gradient(135deg,var(--accent),#8A5BF0); display:grid; place-items:center; color:#fff; font-weight:800; font-size:20px; box-shadow:0 6px 18px -6px rgba(91,91,240,.5); flex:none; }
+  .pkgname { font-weight:700; font-size:17px; letter-spacing:-.01em; }
+  .pkgname span { color:var(--muted); font-weight:500; }
+  .topbar .links { margin-left:auto; display:flex; gap:16px; font-size:14px; }
+  .topbar .links a { color:var(--muted); text-decoration:none; }
+  .topbar .links a:hover { color:var(--accent); }
+  aside { display:none; }
+  @media (min-width:1000px){ aside{ display:block; position:sticky; top:24px; align-self:start; height:max-content; } }
+  aside .toc-label { text-transform:uppercase; letter-spacing:.12em; font-size:11px; font-weight:700; color:var(--muted); margin-bottom:12px; }
+  aside a { display:block; padding:5px 0 5px 12px; margin-left:-14px; color:var(--muted); text-decoration:none; font-size:13.5px; border-left:2px solid transparent; }
+  aside a:hover { color:var(--ink); border-left-color:var(--accent); }
+  main { min-width:0; padding-bottom:90px; }
+  h1 { font-size:40px; line-height:1.05; letter-spacing:-.03em; font-weight:800; text-wrap:balance; margin:0 0 8px; }
+  .lede { font-size:19px; color:#37404A; max-width:var(--maxw); margin:0 0 24px; line-height:1.5; }
+  .lede b { color:var(--ink); }
+  .cta { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:14px; align-items:center; }
+  .btn { display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border-radius:10px; font-weight:600; font-size:14px; text-decoration:none; }
+  .btn.primary { background:var(--accent); color:#fff; box-shadow:0 6px 16px -6px rgba(91,91,240,.6); }
+  .btn.ghost { border:1px solid var(--line); color:var(--ink); background:#fff; }
+  .install { font-family:ui-monospace,"SF Mono",Menlo,monospace; font-size:14px; background:var(--code-bg); color:var(--code-ink); padding:12px 16px; border-radius:10px; margin:0 0 30px; display:inline-block; }
+  .install .p { color:#86EFAC; }
+  .badges { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:30px; }
+  .badge { font-family:ui-monospace,Menlo,monospace; font-size:12px; padding:4px 10px; border-radius:6px; border:1px solid var(--line); background:#fff; color:#4B5563; }
+  .badge b { color:var(--accent); }
+  .features { list-style:none; padding:0; margin:0 0 40px; display:grid; gap:8px; max-width:var(--maxw); }
+  .features li { display:flex; gap:10px; align-items:baseline; font-size:15px; color:#37404A; }
+  .features li::before { content:""; width:6px; height:6px; border-radius:50%; background:var(--mint); flex:none; transform:translateY(-1px); }
+  h2 { font-size:15px; text-transform:uppercase; letter-spacing:.1em; font-weight:700; color:var(--accent); margin:52px 0 4px; padding-top:16px; scroll-margin-top:20px; }
+  h2 + .h2sub { color:var(--muted); font-size:14px; margin:0 0 18px; }
+  p { max-width:var(--maxw); }
+  a { color:var(--accent); }
+  pre { background:var(--code-bg); color:var(--code-ink); padding:18px 20px; border-radius:12px; overflow-x:auto; font-size:13.5px; line-height:1.6; font-family:ui-monospace,"SF Mono","JetBrains Mono",Menlo,monospace; margin:14px 0 22px; border:1px solid #23262F; }
+  pre .k{color:#C4B5FD;} pre .s{color:#86EFAC;} pre .c{color:#6B7280;} pre .f{color:#93C5FD;} pre .n{color:#FDBA74;}
+  code:not(pre code){ background:var(--chip); color:#4338CA; padding:1.5px 6px; border-radius:5px; font-family:ui-monospace,Menlo,monospace; font-size:13px; }
+  .tablewrap { overflow-x:auto; margin:6px 0 24px; max-width:100%; }
+  table { border-collapse:collapse; width:100%; font-size:13.5px; min-width:460px; }
+  th,td { text-align:left; padding:9px 14px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:700; border-bottom:1.5px solid #DADAE4; }
+  td .mono { font-family:ui-monospace,Menlo,monospace; color:#4338CA; }
+  footer { grid-column:1/-1; border-top:1px solid var(--line); padding:26px 0 40px; color:var(--muted); font-size:13.5px; display:flex; gap:18px; flex-wrap:wrap; }
+  :focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:3px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="logo">S</div>
+    <div class="pkgname">snapedit-api <span>· v1.0.0</span></div>
+    <div class="links">
+      <a href="https://www.npmjs.com/package/snapedit-api">npm</a>
+      <a href="https://jsr.io/@duonglm21/snapedit-api">JSR</a>
+      <a href="https://github.com/duonglm21/snapedit-api">GitHub</a>
+    </div>
+  </div>
+
+  <aside>
+    <div class="toc-label">On this page</div>
+    <nav>
+      <a href="#quickstart">Quick start</a>
+      <a href="#inputs">Inputs</a>
+      <a href="#config">Configuration</a>
+      <a href="#examples">Examples</a>
+      <a href="#async">Async tasks</a>
+      <a href="#errors">Error handling</a>
+      <a href="#coverage">API coverage</a>
+    </nav>
+  </aside>
+
+  <main>
+    <h1>SnapEdit SDK</h1>
+    <p class="lede">Official TypeScript / JavaScript SDK for the SnapEdit API — <b>40+ AI image &amp; video editing models through a single API key</b>: background removal, object erasing, upscaling, restoration, image generation, virtual try-on, and more.</p>
+
+    <div class="cta">
+      <a class="btn primary" href="#quickstart">Get started</a>
+      <a class="btn ghost" href="https://github.com/duonglm21/snapedit-api">View on GitHub</a>
+    </div>
+    <div class="install"><span class="p">npm</span> install snapedit-api</div>
+
+    <div class="badges">
+      <span class="badge">npm <b>v1.0.0</b></span>
+      <span class="badge">license <b>MIT</b></span>
+      <span class="badge">types <b>included</b></span>
+      <span class="badge">node <b>≥18</b></span>
+    </div>
+
+    <ul class="features">
+      <li>Full TypeScript types for every endpoint</li>
+      <li>Works in Node.js 18+, Bun, Deno, edge runtimes, and the browser</li>
+      <li>Accepts URLs, local file paths, <code>Blob</code>, <code>Buffer</code>, and <code>Uint8Array</code></li>
+      <li>Built-in retries, timeouts, and rate-limit tracking</li>
+      <li>One-call helpers for async tasks with automatic polling</li>
+    </ul>
+
+    <h2 id="quickstart">Quick start</h2>
+    <p class="h2sub">Get an API key from the SnapEdit dashboard — keys start with <code>sk-snap-</code>.</p>
+<pre><span class="k">import</span> { SnapEdit } <span class="k">from</span> <span class="s">"snapedit-api"</span>;
+
+<span class="k">const</span> client = <span class="k">new</span> <span class="f">SnapEdit</span>({ apiKey: process.env.SNAPEDIT_API_KEY });
+
+<span class="c">// Remove the background from an image URL</span>
+<span class="k">const</span> result = <span class="k">await</span> client.remove.<span class="f">background</span>({
+  input_image: <span class="s">"https://img.snapedit.app/portrait.jpg"</span>,
+});
+
+console.<span class="f">log</span>(result.data[<span class="n">0</span>].url);</pre>
+
+    <h2 id="inputs">Inputs: URL, path, or binary</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Input</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td>Remote URL</td><td><span class="mono">"https://example.com/cat.jpg"</span></td></tr>
+          <tr><td>Local file path*</td><td><span class="mono">"./photos/cat.jpg"</span></td></tr>
+          <tr><td>Blob / File</td><td><span class="mono">new Blob([bytes])</span></td></tr>
+          <tr><td>Buffer</td><td><span class="mono">fs.readFileSync("./cat.jpg")</span></td></tr>
+          <tr><td>Uint8Array</td><td><span class="mono">new Uint8Array(bytes)</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="h2sub">* Local file paths are read from disk in Node.js only.</p>
+
+    <h2 id="config">Configuration</h2>
+<pre><span class="k">const</span> client = <span class="k">new</span> <span class="f">SnapEdit</span>({
+  apiKey: <span class="s">"sk-snap-..."</span>,        <span class="c">// required</span>
+  authScheme: <span class="s">"bearer"</span>,          <span class="c">// or "api-key" header</span>
+  timeout: <span class="n">60000</span>,               <span class="c">// per-request, ms</span>
+  maxRetries: <span class="n">2</span>,                 <span class="c">// retries on 429 / 5xx</span>
+});</pre>
+
+    <h2 id="examples">Examples by category</h2>
+<pre><span class="c">// Removal</span>
+<span class="k">await</span> client.remove.<span class="f">background</span>({ input_image: url });
+<span class="k">await</span> client.remove.<span class="f">objects</span>({ input_image: url, erase_mode: <span class="s">"super"</span> });
+<span class="k">await</span> client.remove.<span class="f">logo</span>({ input_image: url });    <span class="c">// auto-detects</span>
+
+<span class="c">// Enhance / restore / colorize</span>
+<span class="k">await</span> client.enhance.<span class="f">image</span>({ input_image: url, zoom_factor: <span class="n">4</span> });
+<span class="k">await</span> client.enhance.<span class="f">restore</span>({ input_image: oldPhotoUrl });
+<span class="k">await</span> client.enhance.<span class="f">colorize</span>({ input_image: bwPhotoUrl });
+
+<span class="c">// Generation</span>
+<span class="k">await</span> client.generate.<span class="f">zimage</span>({
+  prompt: <span class="s">"a fox in a snowy forest"</span>,
+  aspect_ratio: <span class="s">"16:9"</span>,
+});</pre>
+
+    <h2 id="async">Async tasks (try-on, video, PDF)</h2>
+    <p class="h2sub">The <code>.run()</code> helper creates the task <b>and</b> polls to completion in one call.</p>
+<pre><span class="k">const</span> task = <span class="k">await</span> client.tryOn.<span class="f">run</span>(
+  {
+    model_image: personUrl,
+    cloth_image: shirtUrl,
+    cloth_type: <span class="s">"upper"</span>,
+    hd_mode: <span class="k">true</span>,
+  },
+  { onProgress: (t) => console.<span class="f">log</span>(t.status, t.progress) }
+);
+
+console.<span class="f">log</span>(task.download_url);</pre>
+
+    <h2 id="errors">Error handling</h2>
+<pre><span class="k">try</span> {
+  <span class="k">await</span> client.remove.<span class="f">background</span>({ input_image: url });
+} <span class="k">catch</span> (err) {
+  <span class="k">if</span> (err <span class="k">instanceof</span> SnapEditError) {
+    console.<span class="f">error</span>(err.status, err.type, err.message);
+    <span class="k">if</span> (err.isRateLimit) console.<span class="f">log</span>(<span class="s">`retry after ${err.retryAfter}s`</span>);
+  }
+}</pre>
+
+    <h2 id="coverage">API coverage</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Resource</th><th>Methods</th></tr></thead>
+        <tbody>
+          <tr><td><span class="mono">client.detect</span></td><td>objects · text · wires</td></tr>
+          <tr><td><span class="mono">client.remove</span></td><td>objects · text · logo · wires · background · backgroundGraphic · reflection · mirror</td></tr>
+          <tr><td><span class="mono">client.enhance</span></td><td>image · imagePro · art · restore · restorePro · colorize · colorizePro · lightRestore · backlitFix · nightFlash</td></tr>
+          <tr><td><span class="mono">client.generate</span></td><td>zimage · qwen · art · background · headshot · sticker</td></tr>
+          <tr><td><span class="mono">client.edit</span></td><td>edit · multi</td></tr>
+          <tr><td><span class="mono">client.beauty</span></td><td>retouchSkin · makeup · hairstyle</td></tr>
+          <tr><td><span class="mono">client.utility</span></td><td>outpaint · poseSuggest · aiDetect</td></tr>
+          <tr><td><span class="mono">client.tryOn</span></td><td>create · get · cancel · wait · run</td></tr>
+          <tr><td><span class="mono">client.video</span></td><td>enhance · removeLogo · status getters</td></tr>
+          <tr><td><span class="mono">client.files</span></td><td>removeLogoPdf · status getter</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    <span>MIT © SnapEdit</span>
+    <span><a href="https://developer.snapedit.app">developer.snapedit.app</a></span>
+    <span>npm i snapedit-api</span>
+  </footer>
+</div>
+</body>
+</html>
