@@ -1,0 +1,16 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/index.ts"],
+  "out": "docs/api",
+  "name": "snapedit-api",
+  "readme": "none",
+  "includeVersion": true,
+  "hideGenerator": true,
+  "navigationLinks": {
+    "Home": "https://duonglm21.github.io/snapedit-api/",
+    "npm": "https://www.npmjs.com/package/snapedit-api",
+    "GitHub": "https://github.com/duonglm21/snapedit-api"
+  },
+  "categorizeByGroup": true,
+  "sort": ["source-order"]
+}
