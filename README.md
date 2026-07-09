@@ -1,8 +1,8 @@
 # SnapEdit SDK
 
-[![npm version](https://img.shields.io/npm/v/@snapedit/sdk.svg)](https://www.npmjs.com/package/@snapedit/sdk)
-[![license](https://img.shields.io/npm/l/@snapedit/sdk.svg)](./LICENSE)
-[![types](https://img.shields.io/npm/types/@snapedit/sdk.svg)](https://www.npmjs.com/package/@snapedit/sdk)
+[![npm version](https://img.shields.io/npm/v/snapedit-api.svg)](https://www.npmjs.com/package/snapedit-api)
+[![license](https://img.shields.io/npm/l/snapedit-api.svg)](./LICENSE)
+[![types](https://img.shields.io/npm/types/snapedit-api.svg)](https://www.npmjs.com/package/snapedit-api)
 
 Official TypeScript / JavaScript SDK for the [SnapEdit API](https://developer.snapedit.app) — **40+ AI image & video editing models through a single API key**: background removal, object/text/logo erasing, upscaling, restoration, image generation, virtual try-on, video enhancement, and more.
 
@@ -15,8 +15,8 @@ Official TypeScript / JavaScript SDK for the [SnapEdit API](https://developer.sn
 ## Installation
 
 ```bash
-npm install @snapedit/sdk
-# or: pnpm add @snapedit/sdk / yarn add @snapedit/sdk / bun add @snapedit/sdk
+npm install snapedit-api
+# or: pnpm add snapedit-api / yarn add snapedit-api / bun add snapedit-api
 ```
 
 ## Quick start
@@ -24,7 +24,7 @@ npm install @snapedit/sdk
 Get an API key from the [SnapEdit dashboard](https://developer.snapedit.app/en/dashboard/api-keys) (keys start with `sk-snap-`).
 
 ```ts
-import { SnapEdit } from "@snapedit/sdk";
+import { SnapEdit } from "snapedit-api";
 
 const client = new SnapEdit({ apiKey: process.env.SNAPEDIT_API_KEY! });
 
@@ -39,7 +39,7 @@ console.log(result.data[0].url); // → https://outputs.snapedit.app/...
 CommonJS works too:
 
 ```js
-const { SnapEdit } = require("@snapedit/sdk");
+const { SnapEdit } = require("snapedit-api");
 ```
 
 ## Inputs: URL, path, or binary
@@ -173,7 +173,7 @@ const pdf = await client.files.removeLogoPdf("./document.pdf");
 All non-2xx responses throw a `SnapEditError`; async task failures throw a `SnapEditTaskError`.
 
 ```ts
-import { SnapEditError } from "@snapedit/sdk";
+import { SnapEditError } from "snapedit-api";
 
 try {
   await client.remove.background({ input_image: url });

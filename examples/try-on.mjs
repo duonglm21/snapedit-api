@@ -1,6 +1,6 @@
 // Async virtual try-on with automatic polling.
 // Run: SNAPEDIT_API_KEY=sk-snap-... node examples/try-on.mjs
-import { SnapEdit } from "@snapedit/sdk";
+import { SnapEdit } from "snapedit-api";
 
 const client = new SnapEdit({ apiKey: process.env.SNAPEDIT_API_KEY });
 

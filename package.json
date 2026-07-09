@@ -1,5 +1,5 @@
 {
-  "name": "@snapedit/sdk",
+  "name": "snapedit-api",
   "version": "1.0.0",
   "description": "Official TypeScript/JavaScript SDK for the SnapEdit API — 40+ AI image & video editing models through a single API key.",
   "keywords": [

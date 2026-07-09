@@ -1,5 +1,5 @@
 // Run: SNAPEDIT_API_KEY=sk-snap-... node examples/basic.mjs
-import { SnapEdit, SnapEditError } from "@snapedit/sdk";
+import { SnapEdit, SnapEditError } from "snapedit-api";
 
 const client = new SnapEdit({ apiKey: process.env.SNAPEDIT_API_KEY });
 
